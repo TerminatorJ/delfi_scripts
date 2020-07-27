@@ -38,27 +38,33 @@ AB <- makeGRangesFromDataFrame(AB, keep.extra.columns=TRUE)
 chromosomes <- GRanges(paste0("chr", 1:22),
                        IRanges(0, seqlengths(Hsapiens)[1:22]))
 
-tcmeres <- gaps.hg19[grepl("centromere|telomere", gaps.hg19$type)]
+tcmeres <- gaps.hg19[grepl("centromere|telomere", gaps.hg19$type)]##gaps.hg19无法访问这个对象，没有包可以直接用它
 
 arms <- GenomicRanges::setdiff(chromosomes, tcmeres)
-arms <- arms[-c(25,27,29,41,43)]
+arms <- arms[-c(25,27,29,41,43)]##跳过
 
 armlevels <- c("1p","1q","2p","2q","3p","3q","4p","4q","5p","5q","6p","6q",
                "7p","7q","8p","8q", "9p", "9q","10p","10q","11p","11q","12p",
                "12q","13q","14q","15q","16p","16q","17p","17q","18p","18q",
-               "19p", "19q","20p","20q","21q","22q")
+               "19p", "19q","20p","20q","21q","22q")##大致就是如何挑选全基因组有用的位点，我们用不到
 
 arms$arm <- armlevels
 AB <- AB[-queryHits(findOverlaps(AB, gaps.hg19))]
 AB <- AB[queryHits(findOverlaps(AB, arms))]
-AB$arm <- armlevels[subjectHits(findOverlaps(AB, arms))]
+AB$arm <- armlevels[subjectHits(findOverlaps(AB, arms))]##经过前面的操作，将AB这个表格增加了一列arm列
 
-seqinfo(AB) <- seqinfo(Hsapiens)[seqlevels(seqinfo(AB))]
-AB <- trim(AB)
-AB$gc <- GCcontent(Hsapiens, AB)
+seqinfo(AB) <- seqinfo(Hsapiens)[seqlevels(seqinfo(AB))]#seqlevels得到的是每一个水平的名字，例如chr1这样的信息。
+#相当于从Hsapien中取出AB中对应的信息，然后给AB添加信息,目的是让AB的信息更全。
+
+
+#seqnames seqlengths isCircular genome
+#  chr1      249250621      FALSE   hg19
+
+AB <- trim(AB)#修剪越界的非NA的非环状序列
+AB$gc <- GCcontent(Hsapiens, AB)#GCcontent(Hsapiens, GRanges("chr1", IRanges(1e6, 1e6 + 1000)))在某一个位置的区间GC含量
 
 ## These bins had no coverage
-AB <- AB[-c(8780, 13665)]
+AB <- AB[-c(8780, 13665)]#-c(A,B)的是小于0的,这里选取了没reads覆盖的地方。
 fragments <- readRDS(fragfile)
 # 
 ### Filters
