@@ -21,7 +21,7 @@ tib.list <- map2(tib.list, names(tib.list), ~ mutate(.x, id = .y)) %>%#mutate对
 #   sample type  chromosome arm   combine short2 long2 short.corrected2 long.corrected2 hic.eigen id
 #   <chr>  <fct> <fct>      <fct>   <dbl>  <dbl> <dbl>            <dbl>           <dbl>     <dbl>  1
 # 1 PGDX1… Lymp… chr1       1p          1  23289 29487           14419.          29010.    -1.61   1
-
+#最后形成的是一个大表格，包含了所有样本的bin信息，同事添加了id列
 
 tib.list <- tib.list %>% select(-matches("X"))#将X列排除掉
 saveRDS(tib.list, "bins_100kbcompartments.rds")
