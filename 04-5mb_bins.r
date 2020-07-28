@@ -3,10 +3,10 @@ library(multidplyr)
 library(GenomicRanges)
 library(readxl)
 
-df.fr <- readRDS("bins_100kbcompartments.rds")
-master <- read_csv("sample_reference.csv")
+df.fr <- readRDS("bins_100kbcompartments.rds")#导入的是一个list，每一个样本对应的table，R中也可以使用list来存储大样本
+master <- read_csv("sample_reference.csv")#所有患者信息
 
-df.fr2 <- inner_join(df.fr, master, by=c("id"="WGS ID"))
+df.fr2 <- inner_join(df.fr, master, by=c("id"="WGS ID"))##形成了一个大表格，暴扣样本信息也包括ratio信息
 
 armlevels <- c("1p","1q","2p","2q","3p","3q","4p","4q","5p","5q","6p","6q",
                "7p","7q","8p","8q", "9p", "9q","10p","10q","11p","11q","12p",
@@ -15,7 +15,7 @@ armlevels <- c("1p","1q","2p","2q","3p","3q","4p","4q","5p","5q","6p","6q",
 df.fr2$arm <- factor(df.fr2$arm, levels=armlevels)
 
 ## combine adjacent 100kb bins to form 5mb bins. We count starting from
-## the telomeric end and remove the bin closest to the centromere if it is
+## the telomeric(端粒) end and remove the bin closest to the centromere（着丝粒） if it is
 ## smaller than 5mb.
 df.fr2 <- df.fr2 %>% group_by(id, arm) %>%
     mutate(combine = ifelse(grepl("p", arm), ceiling((1:length(arm))/50),
