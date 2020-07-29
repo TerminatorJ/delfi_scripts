@@ -1,5 +1,6 @@
+#将所有的样本100kb的bin结合起来形成一个大表格
 library(tidyverse)
-library(GenomicRanges)https://github.com/TerminatorJ/delfi_scripts
+library(GenomicRanges)
 bindir <- "../bins_100kb"
 ##目的，产生一个list，每一个键包含WGS_id的一个号码，其实相当于每一个样本，每一个样本得到一个AB列表，之后就可以对其进行批量处理
 
