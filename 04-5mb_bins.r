@@ -46,7 +46,7 @@ df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
               end=rev(end)[1],
               binsize = n())
 ### assign bins
-df.fr3 <- inner_join(df.fr3, master, by=c("sample"="WGS ID"))#得到所有样本的5m信息
+df.fr3 <- inner_join(df.fr3, master, by=c("sample"="WGS ID"))#得到所有样本的5m信息,由于summarise之后形成的表格没有样本信息，所以innerjoin一下来得到样本信息
 df.fr3 <- df.fr3 %>% mutate(type = gsub(" Cancer|carcinoma", "", `Patient Type`, ignore.case=TRUE))#对每一个patient type进行修饰
 df.fr3 <- df.fr3 %>% filter(binsize==50)#仅仅选取binsize在50个的bin舍弃掉着丝粒上面的bin
 df.fr3 <- df.fr3 %>% group_by(sample) %>% mutate(bin = 1:length(sample))#对新形成的5m的bin进行排列，每一个bin代表一个5m的区间。
