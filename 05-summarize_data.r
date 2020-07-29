@@ -1,6 +1,6 @@
 library(tidyverse)
 library(readxl)
-
+#统计所有的样本，也可以用来构建基线
 master <- read_csv("sample_reference.csv")
 df.fr3 <- readRDS("../inst/extdata/bins_5mbcompartments.rds")
 ##这个是按照bin分类的结果
