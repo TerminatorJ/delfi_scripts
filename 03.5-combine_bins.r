@@ -15,7 +15,7 @@ names(tib.list) <- ids#给每一个列表的结果添加名字
 # A tibble: 8,720 x 33
 #给tib.list的每一个列表里面的内容创建了一个列，为其WGS的id名
 tib.list <- map2(tib.list, names(tib.list), ~ mutate(.x, id = .y)) %>%#mutate对dataframe的列名进行更改,这里给每一个tib文件创建了id列，该列为tib.list的names
-    bind_rows() %>% select(id, everything())#bind_rows表示两个表或者向量上下拼接，在选取特定的列。
+    bind_rows() %>% select(id, everything())#bind_rows表示两个表或者向量上下拼接，在选取特定的列。select(id,everything())表示将id放在最前头
 #样例：
 #$this_name#有很多的键，每一个都执行以下操作
 ## A tibble: 8,720 x 33
