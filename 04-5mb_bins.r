@@ -3,7 +3,7 @@ library(multidplyr)
 library(GenomicRanges)
 library(readxl)
 
-df.fr <- readRDS("bins_100kbcompartments.rds")#导入的是一个list，每一个样本对应的table，R中也可以使用list来存储大样本
+df.fr <- readRDS("bins_100kbcompartments.rds")#导入的是一个大table，table中添加了一列id来进行不同样本的区分
 master <- read_csv("sample_reference.csv")#所有患者信息
 
 df.fr2 <- inner_join(df.fr, master, by=c("id"="WGS ID"))##形成了一个大表格，包括样本信息也包括ratio信息
@@ -19,7 +19,7 @@ df.fr2$arm <- factor(df.fr2$arm, levels=armlevels)#得到了所有的需要的�
 ## smaller than 5mb.端粒开始计数，包含着丝粒的不足5mb的位点删除
 #对df.fr添加一列conbine，将所有的染色体p进行分组，分成175段，其中每一段有50个值每一个值相当于100kb，100kb*50=5M的长度，这样就可以将样本分为5M的长度区间了
 df.fr2 <- df.fr2 %>% group_by(id, arm) %>%
-    mutate(combine = ifelse(grepl("p", arm), ceiling((1:length(arm))/50),#其实就是将某一个样本的8000多个bin使用ceiling将所有的arm分成175段,其中每一段有50个值
+    mutate(combine = ifelse(grepl("p", arm), ceiling((1:length(arm))/50),#其实就是将某一个样本的8000多个bin使用ceiling将所有的arm分成175段,其中每一段有50个相同的值
                            ceiling(rev((1:length(arm))/50) )))#ceiling函数是向上取整函数，得到一个数值型向量的所有天花板整数。将函数得到的mutate添加一列在总表上面。
 #对不同id，不同100kb的bin，不同arm，不同5m的bin进行分别计算
 df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
