@@ -72,7 +72,7 @@ small.arms <- setNames(c("", "12q", "", "16q",
                        c("12p", "12q", "16p", "16q",
                          "17p", "17q", "18p", "18q",
                          "19p", "19q", "20p", "20q",
-                         "21q", "22q"))
+                         "21q", "22q"))#the name is in the last value
 arm.labels <- setNames(arm$arm, arm$arm)
 arm.labels[names(small.arms)] <- small.arms
 
